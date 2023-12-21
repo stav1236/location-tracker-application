@@ -9,6 +9,8 @@ import {
 import * as Location from "expo-location";
 import * as FileSystem from "expo-file-system";
 
+const FILE_PATH = `${FileSystem.cacheDirectory}data.json`;
+
 interface Location {
   latitude: number;
   longitude: number;
@@ -40,11 +42,10 @@ const LocationTracker = () => {
           return;
         }
 
-        const fileUri = `${FileSystem.documentDirectory}data.json`;
-        const fileInfo = await FileSystem.getInfoAsync(fileUri);
+        const fileInfo = await FileSystem.getInfoAsync(FILE_PATH);
 
         if (fileInfo.exists) {
-          const jsonContent = await FileSystem.readAsStringAsync(fileUri);
+          const jsonContent = await FileSystem.readAsStringAsync(FILE_PATH);
           const loadedData1 = JSON.parse(jsonContent);
           console.log("File loaded successfully");
           setLocationsData(loadedData1);
@@ -92,10 +93,9 @@ const LocationTracker = () => {
   const saveToJsonFile = async () => {
     try {
       const jsonContent = JSON.stringify(locationsData);
-      const fileUri = `${FileSystem.documentDirectory}data.json`;
 
-      await FileSystem.writeAsStringAsync(fileUri, jsonContent);
-      console.log("File saved successfully:", fileUri);
+      await FileSystem.writeAsStringAsync(FILE_PATH, jsonContent);
+      console.log("File saved successfully:", FILE_PATH);
     } catch (error) {
       setErrorMsg("Error saving file");
       console.error("Error saving file:", error);
@@ -105,8 +105,7 @@ const LocationTracker = () => {
   const loadFromJsonFile = async () => {
     if (loadedData.length === 0) {
       try {
-        const fileUri = `${FileSystem.documentDirectory}data.json`;
-        const jsonContent = await FileSystem.readAsStringAsync(fileUri);
+        const jsonContent = await FileSystem.readAsStringAsync(FILE_PATH);
         const loadedData1 = JSON.parse(jsonContent);
         console.log("File loaded successfully");
         setLoadedData(loadedData1);
