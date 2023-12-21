@@ -40,6 +40,16 @@ const LocationTracker = () => {
           return;
         }
 
+        const fileUri = `${FileSystem.documentDirectory}data.json`;
+        const fileInfo = await FileSystem.getInfoAsync(fileUri);
+
+        if (fileInfo.exists) {
+          const jsonContent = await FileSystem.readAsStringAsync(fileUri);
+          const loadedData1 = JSON.parse(jsonContent);
+          console.log("File loaded successfully");
+          setLocationsData(loadedData1);
+        }
+
         locationInterval = setInterval(async () => {
           const { coords, timestamp } = await Location.getCurrentPositionAsync(
             {}
